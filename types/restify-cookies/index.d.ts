@@ -1,19 +1,23 @@
-import "restify";
+import "restify"
 declare module "restify" {
     interface CookieOptionsInterface {
-        path?: string;
-        domain?: string;
-        maxAge?: number;
-        secure?: boolean;
-        httpOnly?: boolean;
+        path?: string,
+        domain?: string,
+        maxAge?: number,
+        secure?: boolean,
+        httpOnly?: boolean
     }
+
+    interface Request {
+        readonly cookies: any
+    }
+
     interface Response {
-        cookies: any;
-        setCookie: (key: string, value: any, cookieOptions?: CookieOptionsInterface) => void;
-        clearCookie: (key: string) => void;
+        setCookie: (key: string, value: any, cookieOptions?: CookieOptionsInterface) => void
+        clearCookie: (key: string) => void
     }
 }
 
-declare module "restify-cookies" {
-    export const parse: (req?: any, res?: any, next?: any) => void;
+declare namespace myLib {
+    export const parse: (req?: any, res?: any, next?: any) => void
 }

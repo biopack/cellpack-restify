@@ -26,7 +26,7 @@ export class CellpackRestify extends Cellpack {
         this.server.use(Restify.queryParser())
         // this.server.use(CookieParser.parse)
         this.server.use((req,res,next) => {
-            // console.log(res.cookies)
+            console.log(req.cookies)
         })
 
         this.server.get(".*", (req,res,next) => {})
