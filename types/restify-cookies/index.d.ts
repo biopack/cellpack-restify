@@ -18,6 +18,4 @@ declare module "restify" {
     }
 }
 
-declare namespace myLib {
-    export const parse: (req?: any, res?: any, next?: any) => void
-}
+export const parse: (req?: any, res?: any, next?: any) => void
