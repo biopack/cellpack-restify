@@ -1,0 +1,17 @@
+{
+    "include": [
+        "types/**/*.d.ts",
+        "src/**/*"
+    ],
+    "compileOnSave": false,
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "target": "es6",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "strictNullChecks": true,
+        "preserveConstEnums": true,
+        "outDir": "./lib/"
+    }
+}
