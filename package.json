@@ -1,7 +1,17 @@
 {
     "name": "cellpack-restify",
     "version": "1.0.0-alpha.1",
-    "description": "Cellpack module for Microb framework",
+    "description": "Cellpack module for Microb framework integrated Restify server",
+    "keywords": [
+        "Microb","mvc","framework","web","server","restify"
+    ],
+    "bugs": "https://github.com/biopack/cellpack-restify/issues",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/biopack/cellpack-restify.git"
+    },
+    "license": "GPL-3.0",
+    "author": "scippio",
     "main": "./lib/main.js",
     "types": "./types/main.d.ts",
     "scripts": {
@@ -9,11 +19,6 @@
         "watch": "gulp watch",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "keywords": [
-        "Microb"
-    ],
-    "author": "scippio",
-    "license": "GPL-3.0",
     "dependencies": {
         "restify": "^4.3.0",
         "restify-cookies": "^0.2.2"
