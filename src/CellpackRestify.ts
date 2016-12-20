@@ -2,6 +2,7 @@
 import { Cellpack, Connection, Request, Transmitter } from "microb"
 import * as Restify from "restify"
 import * as CookieParser from "restify-cookies"
+import * as Promise from "bluebird"
 
 export default class CellpackRestify extends Cellpack {
     //
@@ -12,6 +13,8 @@ export default class CellpackRestify extends Cellpack {
     // }
 
     init(){
+        this.config = this.environment.get("cellpacks")["cellpack-restify"]
+
         // create server
         this.server = Restify.createServer()
         //
@@ -34,12 +37,24 @@ export default class CellpackRestify extends Cellpack {
         this.server.opts(".*", (req,res,next) => {})
 
         // start
-        this.server.listen(this.config.port)
+        // return new Promise<void>((resolve, reject) => {
+            // this.server.listen(this.config.port,() => {
+                // return resolve()
+            // })
+        // })
+
+        this.transmitter.on("microb.loaded", () => {
+            if(this.environment.get("debug")) this.transmitter.emit("log.cellpack.restify",`Listening on port: ${this.config.port}`)
+            this.server.listen(this.config.port)
+        })
+
+        return Promise.resolve()
     }
 
     private rawRequest(req: Restify.Request,res: Restify.Response, next: Restify.Next): void {
         let connection = new Connection()
         connection.request.raw = req
+        connection.response.raw = res
 
         let [hostname,port] = req.headers.host.split(':')
         connection.request.host = hostname
@@ -73,10 +88,14 @@ export default class CellpackRestify extends Cellpack {
             })
         }
 
+        if(this.environment.get("debug")) this.transmitter.emit("log.cellpack.restify",`Request recieved: [${req.method}]: ${connection.request.path}`)
+
         this.transmitter.emit("microb.request",connection)
     }
 
-    private response(connection: Connection){
-        let response = connection.response.raw
+    response(connection: Connection){
+        let rawResponse = connection.response.raw
+        rawResponse.status(connection.response.status)
+        rawResponse.end(connection.response.data)
     }
 }

@@ -1,8 +1,10 @@
-import { Cellpack } from "microb";
+/// <reference types="bluebird" />
+import { Cellpack, Connection } from "microb";
 import * as Restify from "restify";
+import * as Promise from "bluebird";
 export default class CellpackRestify extends Cellpack {
     server: Restify.Server;
-    init(): void;
+    init(): Promise<void>;
     private rawRequest(req, res, next);
-    private response(connection);
+    response(connection: Connection): void;
 }
