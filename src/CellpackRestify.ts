@@ -90,7 +90,7 @@ export default class CellpackRestify extends Cellpack {
             })
         }
 
-        if(this.environment.get("debug")) this.transmitter.emit("log.cellpack.restify",`Request recieved: [${req.method}]: ${connection.request.path}`)
+        if(this.environment.get("debug")) this.transmitter.emit("log.cellpack.restify",`Request recieved: "${connection.request.host}" [${req.method}]: ${connection.request.path}`)
 
         this.transmitter.emit("microb.request",connection)
     }
