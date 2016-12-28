@@ -1,8 +1,10 @@
 
-import { Cellpack, Connection, Request, Transmitter } from "microb"
 import * as Restify from "restify"
 import * as CookieParser from "restify-cookies"
 import * as Promise from "bluebird"
+import * as Moment from "moment"
+//
+import { Cellpack, Connection, Request, Transmitter, Cookie } from "microb"
 
 export default class CellpackRestify extends Cellpack {
     //
@@ -44,7 +46,7 @@ export default class CellpackRestify extends Cellpack {
         // })
 
         this.transmitter.on("microb.loaded", () => {
-            if(this.environment.get("debug")) this.transmitter.emit("log.cellpack.restify",`Listening on port: ${this.config.port}`)
+            this.transmitter.emit("log.cellpack.restify",`Listening on port: ${this.config.port}`)
             this.server.listen(this.config.port)
         })
 
@@ -96,6 +98,32 @@ export default class CellpackRestify extends Cellpack {
     response(connection: Connection){
         let rawResponse = connection.response.raw
         rawResponse.status(connection.response.status)
+
+        // headers
+        let headers = connection.response.headers
+        Object.keys(headers.all()).forEach((key, index, arr) => {
+            if(key !== "cookies"){
+                rawResponse.header(key, headers.get(key))
+            }
+        })
+
+        // cookies
+        let cookies = connection.response.getCookies()
+        cookies.forEach((cookie: Cookie, index: number, arr: Array<Cookie>) => {
+            rawResponse.setCookie(cookie.getName(), cookie.getValue(),{
+                path: cookie.getPath(),
+                domain: cookie.getDomain(),
+                expires: (cookie.getExpires() === null ? null : (<Moment.Moment>cookie.getExpires()).toDate()),
+                secure: cookie.isSecure(),
+                httpOnly: cookie.isHttponly()
+            })
+        })
+        // remove
+        let removeCookies = connection.response.getRemoveCookies()
+        removeCookies.forEach((cookie: Cookie, index: number, arr: Array<Cookie>) => {
+            rawResponse.clearCookie(cookie.getName())
+        })
+
         rawResponse.end(connection.response.data)
     }
 }
