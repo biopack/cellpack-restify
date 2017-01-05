@@ -1,8 +1,8 @@
-
 import * as Restify from "restify"
 import * as CookieParser from "restify-cookies"
 import * as Promise from "bluebird"
 import * as Moment from "moment"
+import * as Ip from "ip-address"
 //
 import { Cellpack, Connection, Request, Transmitter, Cookie } from "microb"
 
@@ -62,6 +62,8 @@ export default class CellpackRestify extends Cellpack {
         connection.request.host = hostname
         connection.request.port = port
         connection.request.path = req.getPath()
+        connection.request.ip = (new Ip.Address6(req.connection.remoteAddress)).to4().address // IPv4 only ... for now
+
         if(req.method === "GET") connection.request.method = Request.Method.GET
         else if(req.method === "POST") connection.request.method = Request.Method.POST
         else if(req.method === "HEAD") connection.request.method = Request.Method.HEAD
