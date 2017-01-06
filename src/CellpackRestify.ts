@@ -2,7 +2,7 @@ import * as Restify from "restify"
 import * as CookieParser from "restify-cookies"
 import * as Promise from "bluebird"
 import * as Moment from "moment"
-import * as Ip from "ip-address"
+// import * as Ip from "ip-address"
 //
 import { Cellpack, Connection, Request, Transmitter, Cookie } from "microb"
 
@@ -76,7 +76,11 @@ export default class CellpackRestify extends Cellpack {
         })
 
         // we need lowercased headers so ...
-        connection.request.ip = (new Ip.Address6(connection.request.headers.get("x-forwarded-for",req.connection.remoteAddress))).to4().address // IPv4 only ... for now
+        let dirtyIps = connection.request.headers.get("x-real-ip",connection.request.headers.get("x-forwarded-for",req.connection.remoteAddress))
+        let dirtyipsArray = dirtyIps.split(",") // can be more IPs
+        let ipPort = dirtyipsArray[0].split(":") // port is possible
+        connection.request.ip = ipPort[0]
+        // connection.request.ip = (new Ip.Address6(ip)).to4().address // IPv4 only ... for now
 
         // query
         Object.keys(req.params).forEach((key,index,arr) => {
