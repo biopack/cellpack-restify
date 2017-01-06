@@ -62,7 +62,6 @@ export default class CellpackRestify extends Cellpack {
         connection.request.host = hostname
         connection.request.port = port
         connection.request.path = req.getPath()
-        connection.request.ip = (new Ip.Address6(req.connection.remoteAddress)).to4().address // IPv4 only ... for now
 
         if(req.method === "GET") connection.request.method = Request.Method.GET
         else if(req.method === "POST") connection.request.method = Request.Method.POST
@@ -75,6 +74,10 @@ export default class CellpackRestify extends Cellpack {
         Object.keys(req.headers).forEach((key,index,arr) => {
             connection.request.headers.set(key.toLowerCase(),req.headers[key])
         })
+
+        // we need lowercased headers so ...
+        connection.request.ip = (new Ip.Address6(connection.request.headers.get("x-forwarded-for",req.connection.remoteAddress))).to4().address // IPv4 only ... for now
+
         // query
         Object.keys(req.params).forEach((key,index,arr) => {
             connection.request.query.set(key,req.params[key])
