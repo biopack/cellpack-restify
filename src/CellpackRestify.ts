@@ -62,6 +62,7 @@ export default class CellpackRestify extends Cellpack {
         connection.request.host = hostname
         connection.request.port = port
         connection.request.path = req.getPath()
+        connection.request.protocol = req.isSecure() ? "https" : "http"
 
         if(req.method === "GET") connection.request.method = Request.Method.GET
         else if(req.method === "POST") connection.request.method = Request.Method.POST
